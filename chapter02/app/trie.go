@@ -6,6 +6,7 @@ import (
 )
 
 type Node struct {
+	pattern  string
 	part     string
 	children []*Node
 	isWild   bool
@@ -15,8 +16,9 @@ func (n *Node) String() string {
 	return fmt.Sprintf("node{ part=%s, isWild=%t}", n.part, n.isWild)
 }
 
-func (n *Node) Insert(parts []string, height int) {
+func (n *Node) Insert(pattern string, parts []string, height int) {
 	if len(parts) == height {
+		n.pattern = pattern
 		return
 	}
 
@@ -24,15 +26,18 @@ func (n *Node) Insert(parts []string, height int) {
 	child := n.matchChild(part)
 
 	if child == nil {
-		child = &Node{part: part, isWild: false}
+		child = &Node{part: part, isWild: part[0] == ':' || part[0] == '*'}
 		n.children = append(n.children, child)
 	}
 
-	child.Insert(parts, height+1)
+	child.Insert(pattern, parts, height+1)
 }
 
 func (n *Node) Search(parts []string, height int) *Node {
 	if len(parts) == height || strings.HasPrefix(n.part, "*") {
+		if n.pattern == "" {
+			return nil
+		}
 		return n
 	}
 

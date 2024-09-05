@@ -8,19 +8,31 @@ import (
 
 /**
  * curl -X GET "http://localhost:8080/get?name=apktool"
+ * curl -X GET "http://localhost:8080/hi/apktool"
  * curl -X POST "http://localhost:8080/post" -d 'username=apktool&password=123456'
+ * curl -X POST "http://localhost:8080/ping/apktool" -d 'name=apktool'
  */
 
 func main() {
 	engine := app.New()
 	engine.Get("/get", func(c *app.Context) {
-		c.String(http.StatusOK, "hello %s, you're at %s\n", c.Query("name"), c.Path)
+		c.String(http.StatusOK, "get %s, you're at %s\n", c.Form("name"), c.Path)
+	})
+
+	engine.Get("/hi/:name", func(c *app.Context) {
+		c.String(http.StatusOK, "hi %s, you're at %s\n", c.Form("name"), c.Path)
 	})
 
 	engine.Post("/post", func(c *app.Context) {
 		c.Json(http.StatusOK, app.H{
 			"username": c.PostForm("username"),
 			"password": c.PostForm("password"),
+		})
+	})
+
+	engine.Post("/ping/:name", func(c *app.Context) {
+		c.Json(http.StatusOK, app.H{
+			"pong": c.PostForm("name"),
 		})
 	})
 

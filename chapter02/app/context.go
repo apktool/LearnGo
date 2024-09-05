@@ -31,7 +31,7 @@ func (c *Context) PostForm(key string) string {
 	return c.Request.FormValue(key)
 }
 
-func (c *Context) Query(key string) string {
+func (c *Context) Form(key string) string {
 	return c.Request.URL.Query().Get(key)
 }
 
