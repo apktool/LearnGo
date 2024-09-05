@@ -11,6 +11,8 @@ import (
  * curl -X GET "http://localhost:8080/hi/apktool"
  * curl -X POST "http://localhost:8080/post" -d 'username=apktool&password=123456'
  * curl -X POST "http://localhost:8080/ping/apktool" -d 'name=apktool'
+ * curl -X GET "http://localhost:8080/v1/hello"
+ * curl -X GET "http://localhost:8080/v2/hello"
  */
 
 func main() {
@@ -36,8 +38,23 @@ func main() {
 		})
 	})
 
+	v1 := engine.Group("/v1")
+	{
+		v1.Get("/hello", func(c *app.Context) {
+			c.String(http.StatusOK, "hello v1, you're at %s\n", c.Path)
+		})
+	}
+
+	v2 := engine.Group("/v2")
+	{
+		v2.Get("/hello", func(c *app.Context) {
+			c.String(http.StatusOK, "hello v2, you're at %s\n", c.Path)
+		})
+	}
+
 	err := engine.Run(":8080")
 	if err != nil {
 		fmt.Printf("main.go, %s", err)
 	}
+
 }
