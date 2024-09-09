@@ -58,8 +58,14 @@ func (r *Router) handle(c *Context) {
 	node := r.getRoute(c.Method, c.Path)
 	if node != nil {
 		key := fmt.Sprintf("%s-%s", c.Method, node.pattern)
-		r.handlers[key](c)
+		c.handlers = append(c.handlers, r.handlers[key])
 	} else {
-		c.String(http.StatusNotFound, "404 NOT FOUND: %s\n", c.Path)
+		c.handlers = append(c.handlers, func(c *Context) {
+			c.String(http.StatusNotFound, "404 NOT FOUND: %s\n", c.Path)
+		})
+	}
+
+	for i := 0; i < len(c.handlers); i++ {
+		c.handlers[i](c)
 	}
 }

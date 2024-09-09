@@ -9,13 +9,14 @@ import (
 type H map[string]interface{}
 
 type Context struct {
-	Response http.ResponseWriter
-	Request  *http.Request
+	Response   http.ResponseWriter
+	Request    *http.Request
+	StatusCode int
 
 	Path   string
 	Method string
 
-	StatusCode int
+	handlers []HandlerFunc
 }
 
 func newContext(w http.ResponseWriter, r *http.Request) *Context {

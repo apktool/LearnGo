@@ -17,6 +17,8 @@ import (
 
 func main() {
 	engine := app.New()
+	engine.Use(app.Logger1())
+	engine.Use(app.Logger2())
 	engine.Get("/get", func(c *app.Context) {
 		c.String(http.StatusOK, "get %s, you're at %s\n", c.Form("name"), c.Path)
 	})
@@ -56,5 +58,4 @@ func main() {
 	if err != nil {
 		fmt.Printf("main.go, %s", err)
 	}
-
 }
